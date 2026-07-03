@@ -17,7 +17,7 @@ sync_to_target_repo:
           - chmod 644 ~/.ssh/known_hosts
   script:
     # 添加目标仓库
-    - git remote add target software-docs
+    - git remote add target git@github.com:Firefly-docs/software-docs.git
     # 推送当前分支到目标仓库的指定分支
     - git push target HEAD:master
 
