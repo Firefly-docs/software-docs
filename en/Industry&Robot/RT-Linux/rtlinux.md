@@ -1,16 +1,8 @@
 # RTLinux Real-Time System Development Guide
 
----
-
 ## Preface
 
 This document describes the basic usage of Linux kernel real-time patches and helps developers quickly understand and use a real-time system.
-
----
-
-## Contents
-
-[TOC]
 
 ---
 
