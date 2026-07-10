@@ -1,6 +1,6 @@
 # FFMedia
 
-FFMedia is an audio and video codec and processing framework developed based on Rockchip MPP/RGA. It is designed for scenarios such as camera capture, network stream pulling, hardware codec processing, image processing, multi-channel video stitching, real-time display, transcoding and streaming, file recording, and AI inference.
+[FFMedia](https://github.com/Firefly-rk-linux-utils/ffmedia_release) is an audio and video codec and processing framework developed based on Rockchip MPP/RGA. It is designed for scenarios such as camera capture, network stream pulling, hardware codec processing, image processing, multi-channel video stitching, real-time display, transcoding and streaming, file recording, and AI inference.
 
 The framework divides complex audio and video pipelines into three types of modules: input, processing, and output. Developers can combine modules like building blocks to quickly complete a full workflow from capture, decoding, scaling, and encoding to display or streaming. FFMedia makes full use of the hardware capabilities of Rockchip platforms to reduce CPU load while maintaining high real-time performance and low end-to-end latency.
 
