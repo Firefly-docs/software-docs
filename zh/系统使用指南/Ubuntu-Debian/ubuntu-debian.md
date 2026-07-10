@@ -1,0 +1,330 @@
+# Ubuntu/Debian 使用说明
+
+本文介绍 Firefly Ubuntu/Debian 固件上的常用操作。
+
+## 登录用户和密码
+
+默认登录账号：
+
+- 用户：`firefly`
+- 密码：`firefly`
+
+Ubuntu Desktop 固件通常会自动登录到 `firefly` 桌面用户。需要管理员权限时使用 `sudo`：
+
+```bash
+sudo <command>
+```
+
+如需设置 root 密码，执行：
+
+```bash
+sudo passwd root
+```
+
+## 查看固件版本
+
+Firefly 固件提供 `ffgo` 命令用于查看固件信息。向 Firefly 反馈问题时，建议附上 `ffgo version` 的输出。
+
+```bash
+ffgo
+ffgo update
+ffgo version
+```
+
+示例输出：
+
+```text
+OS:      Ubuntu 18.04.5 LTS
+MODEL:   Firefly RK3566-ROC-PC HDMI(Linux)
+FIREFLY: v2.04-1-g618089a
+DATE:    20210316-1035
+KERNEL:  Linux version 4.19.172 ...
+```
+
+## 网络配置
+
+配置网络前先确认实际网口名称：
+
+```bash
+ip link
+nmcli device status
+```
+
+常见以太网接口名为 `eth0`、`enP...` 或 `end...`；常见 Wi-Fi 接口名为 `wlan0` 或 `wlP...`。
+
+### 使用 nmcli 配网
+
+查看设备和连接：
+
+```bash
+nmcli device status
+nmcli connection show
+```
+
+请将 `"Wired connection 1"` 替换成实际连接名。如果没有以太网连接，可先创建：
+
+```bash
+sudo nmcli connection add con-name "eth0-static" ifname eth0 type ethernet
+```
+
+以太网使用 DHCP：
+
+```bash
+sudo nmcli connection modify "Wired connection 1" ipv4.method auto
+sudo nmcli connection up "Wired connection 1"
+```
+
+以太网设置静态地址：
+
+```bash
+sudo nmcli connection modify "Wired connection 1" \
+  ipv4.method manual \
+  ipv4.addresses 192.168.1.100/24 \
+  ipv4.gateway 192.168.1.1 \
+  ipv4.dns "8.8.8.8 114.114.114.114"
+sudo nmcli connection up "Wired connection 1"
+```
+
+Wi-Fi 使用 DHCP 连接：
+
+```bash
+sudo nmcli radio wifi on
+nmcli device wifi list
+sudo nmcli device wifi connect "SSID" password "PASSWORD"
+```
+
+给已有 Wi-Fi 连接设置静态地址：
+
+```bash
+sudo nmcli connection modify "SSID" \
+  ipv4.method manual \
+  ipv4.addresses 192.168.1.101/24 \
+  ipv4.gateway 192.168.1.1 \
+  ipv4.dns "8.8.8.8 114.114.114.114"
+sudo nmcli connection up "SSID"
+```
+
+### 使用 netplan 配网
+
+netplan 会读取 `/etc/netplan/` 下的 YAML 文件。请根据固件实际使用 NetworkManager 或 systemd-networkd 作为 renderer。下面示例使用 `networkd`；如果固件没有使用 networkd，可改为 `NetworkManager`。不要同时用 `nmcli` 和 netplan 管理同一个接口。
+
+以太网 DHCP 示例：
+
+```yaml
+# /etc/netplan/01-firefly.yaml
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+```
+
+以太网静态地址示例：
+
+```yaml
+# /etc/netplan/01-firefly.yaml
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses:
+        - 192.168.1.100/24
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 114.114.114.114
+      routes:
+        - to: 0.0.0.0/0
+          via: 192.168.1.1
+```
+
+Wi-Fi DHCP 示例：
+
+```yaml
+# /etc/netplan/01-firefly.yaml
+network:
+  version: 2
+  renderer: networkd
+  wifis:
+    wlan0:
+      dhcp4: true
+      access-points:
+        "SSID":
+          password: "PASSWORD"
+```
+
+应用配置：
+
+```bash
+sudo netplan generate
+sudo netplan apply
+```
+
+如果正在通过网络远程操作，建议保留串口或本地显示连接，避免配置错误后无法继续访问设备。
+
+## 配置应用开机自启动
+
+### 桌面环境自启动
+
+桌面环境自启动适合需要在用户登录桌面后运行的图形程序。先确认当前桌面环境：
+
+```bash
+echo $XDG_CURRENT_DESKTOP
+```
+
+常用桌面环境示例如下：
+
+<Tabs items={['LXQt', 'Xfce', 'GNOME']} groupId="ubuntu-desktop-autostart" persist>
+<Tab value="LXQt">
+
+LXQt 可打开 `Preferences > LXQt Settings > Session Settings > Autostart` 添加自启动程序，也可以创建用户级 `.desktop` 文件：
+
+```bash
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/myapp.desktop
+```
+
+写入以下内容，请将 `Exec` 改为实际程序路径：
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=My App
+Exec=/home/firefly/myapp/myapp
+Terminal=false
+OnlyShowIn=LXQt;
+```
+
+</Tab>
+<Tab value="Xfce">
+
+Xfce 可打开 `Settings > Session and Startup > Application Autostart` 添加自启动程序，也可以创建用户级 `.desktop` 文件：
+
+```bash
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/myapp.desktop
+```
+
+写入以下内容，请将 `Exec` 改为实际程序路径：
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=My App
+Exec=/home/firefly/myapp/myapp
+Terminal=false
+OnlyShowIn=XFCE;
+```
+
+</Tab>
+<Tab value="GNOME">
+
+GNOME 可将 `.desktop` 文件放到用户自启动目录；系统会在该用户登录 GNOME 桌面后启动程序：
+
+```bash
+mkdir -p ~/.config/autostart
+nano ~/.config/autostart/myapp.desktop
+```
+
+写入以下内容，请将 `Exec` 改为实际程序路径：
+
+```ini
+[Desktop Entry]
+Type=Application
+Name=My App
+Exec=/home/firefly/myapp/myapp
+Terminal=false
+OnlyShowIn=GNOME;
+X-GNOME-Autostart-enabled=true
+```
+
+</Tab>
+</Tabs>
+
+如需所有桌面用户都自动启动同一个程序，可将 `.desktop` 文件放到系统目录：
+
+```bash
+sudo cp ~/.config/autostart/myapp.desktop /etc/xdg/autostart/
+```
+
+如果只是执行一条简单命令，也可使用对应桌面环境提供的图形自启动工具添加命令，例如：
+
+```text
+/home/firefly/myapp/myapp
+```
+
+### systemd 服务自启动
+
+需要作为后台服务运行的应用，建议创建 systemd 服务。
+
+创建 `/etc/systemd/system/myapp.service`：
+
+```ini
+[Unit]
+Description=My Application
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=firefly
+WorkingDirectory=/home/firefly/myapp
+ExecStart=/home/firefly/myapp/myapp
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+```
+
+启用并启动服务：
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now myapp.service
+sudo systemctl status myapp.service
+```
+
+查看日志：
+
+```bash
+journalctl -u myapp.service -f
+```
+
+如果服务启动的是图形程序，需要补充显示环境和权限，例如：
+
+```ini
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/firefly/.Xauthority
+```
+
+## 恢复出厂设置
+
+内置 `recovery` 工具的 Firefly Ubuntu/Debian 固件支持恢复出厂设置。这里的出厂设置表示恢复为设备最后一次升级固件之后的初始状态。执行前请备份重要数据。
+
+查看 recovery 用法：
+
+```bash
+recovery
+```
+
+恢复工具包含以下 reset 选项：
+
+```text
+factory | reset:
+        reset to factory
+```
+
+执行恢复出厂设置：
+
+```bash
+sudo recovery reset
+```
+
+## 参考资料
+
+- [Firefly Linux 开发指南 - Ubuntu 手册](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/manual_ubuntu.html)
+- [Firefly Linux 开发指南 - 初次使用](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/first_use.html)
