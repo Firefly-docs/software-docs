@@ -1,0 +1,2 @@
+# Question feedback 
+If you encounter problems while using the device, please read the [WiKi Tutorial](https://wiki.t-firefly.com/en/) of the device first, if you still can't solve your problem through it, you can go to [Open Source Community](https://bbs.t-firefly.com/forum.php?mod=forumdisplay&fid=100) to find or post.
