@@ -248,3 +248,14 @@ updateEngine --misc=update --image_url=/userdata/update.img --partition=0xFFFC00
 - 网络、显示、存储、音频等主要功能是否正常。
 - userdata 中的用户数据是否保留。
 - Recovery 日志中是否存在分区写入失败。
+
+## 跨版本或分区布局升级
+
+跨 Android 主版本、Linux 发行版、分区布局或数据加密方案升级，不应直接沿用同版本 OTA 流程。升级前至少应确认：
+
+- Bootloader、Kernel、Recovery 和用户空间组件之间是否兼容。
+- 新旧固件的分区名称、起始位置、大小和文件系统是否一致。
+- Android Verified Boot、签名密钥、防回滚版本和数据加密方式是否发生变化。
+- userdata 是否能够原地迁移；无法保证时，应先备份数据并采用完整烧写。
+
+此类升级应单独设计迁移与回退方案，并在所有支持的源版本上逐一验证。若当前 SDK 没有明确提供跨版本 OTA 支持，建议使用 RKDevTool 完整烧写目标固件。
