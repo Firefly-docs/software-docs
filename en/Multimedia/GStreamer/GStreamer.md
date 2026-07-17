@@ -451,17 +451,7 @@ VPU driver and hardware codecs
 
 Decoded images can be displayed through Wayland, X11, or DRM/KMS. Some paths can also use DMA buffers, AFBC, and hardware planes to reduce memory copies and DDR bandwidth usage.
 
-### 7.2 Software Versions and Source Locations
-
-Reference versions covered by the original guide:
-
-| System | GStreamer Version |
-| --- | --- |
-| Buildroot | 1.22.x |
-| Debian 10 (Buster) | 1.14.4 |
-| Debian 11 (Bullseye) | 1.18.5 |
-| Ubuntu 22 | 1.20.3 |
-| Yocto | 1.20.x |
+### 7.2 Software Source Locations
 
 Source locations:
 

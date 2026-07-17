@@ -451,17 +451,7 @@ VPU 驱动和硬件编解码器
 
 解码后的图像可通过 Wayland、X11 或 DRM/KMS 显示。部分链路还可使用 DMA Buffer、AFBC 和硬件 Plane 降低内存复制与 DDR 带宽。
 
-### 7.2 软件版本与源码位置
-
-原指南对应的参考版本：
-
-| 系统 | GStreamer 版本 |
-| --- | --- |
-| Buildroot | 1.22.x |
-| Debian 10（Buster） | 1.14.4 |
-| Debian 11（Bullseye） | 1.18.5 |
-| Ubuntu 22 | 1.20.3 |
-| Yocto | 1.20.x |
+### 7.2 软件源码位置
 
 源码位置：
 
