@@ -169,91 +169,27 @@ sudo netplan apply
 
 ### 桌面环境自启动
 
-桌面环境自启动适合需要在用户登录桌面后运行的图形程序。先确认当前桌面环境：
-
-```bash
-echo $XDG_CURRENT_DESKTOP
-```
-
-常用桌面环境示例如下：
-
-<Tabs items={['LXQt', 'Xfce', 'GNOME']} groupId="ubuntu-desktop-autostart" persist>
-<Tab value="LXQt">
-
-LXQt 可打开 `Preferences > LXQt Settings > Session Settings > Autostart` 添加自启动程序，也可以创建用户级 `.desktop` 文件：
+可将 `.desktop` 文件放到用户自启动目录；系统会在该用户登录桌面后启动程序：
 
 ```bash
 mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
+vim ~/.config/autostart/myapp.desktop
 ```
 
 写入以下内容，请将 `Exec` 改为实际程序路径：
 
-```ini
+```
 [Desktop Entry]
 Type=Application
 Name=My App
 Exec=/home/firefly/myapp/myapp
 Terminal=false
-OnlyShowIn=LXQt;
 ```
-
-</Tab>
-<Tab value="Xfce">
-
-Xfce 可打开 `Settings > Session and Startup > Application Autostart` 添加自启动程序，也可以创建用户级 `.desktop` 文件：
-
-```bash
-mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
-```
-
-写入以下内容，请将 `Exec` 改为实际程序路径：
-
-```ini
-[Desktop Entry]
-Type=Application
-Name=My App
-Exec=/home/firefly/myapp/myapp
-Terminal=false
-OnlyShowIn=XFCE;
-```
-
-</Tab>
-<Tab value="GNOME">
-
-GNOME 可将 `.desktop` 文件放到用户自启动目录；系统会在该用户登录 GNOME 桌面后启动程序：
-
-```bash
-mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
-```
-
-写入以下内容，请将 `Exec` 改为实际程序路径：
-
-```ini
-[Desktop Entry]
-Type=Application
-Name=My App
-Exec=/home/firefly/myapp/myapp
-Terminal=false
-OnlyShowIn=GNOME;
-X-GNOME-Autostart-enabled=true
-```
-
-</Tab>
-</Tabs>
 
 如需所有桌面用户都自动启动同一个程序，可将 `.desktop` 文件放到系统目录：
 
 ```bash
 sudo cp ~/.config/autostart/myapp.desktop /etc/xdg/autostart/
-```
-
-如果只是执行一条简单命令，也可使用对应桌面环境提供的图形自启动工具添加命令，例如：
-
-```text
-/home/firefly/myapp/myapp
 ```
 
 ### systemd 服务自启动
@@ -323,8 +259,3 @@ factory | reset:
 ```bash
 sudo recovery reset
 ```
-
-## 参考资料
-
-- [Firefly Linux 开发指南 - Ubuntu 手册](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/manual_ubuntu.html)
-- [Firefly Linux 开发指南 - 初次使用](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/first_use.html)

@@ -169,91 +169,27 @@ If remote access depends on the interface being changed, keep a serial console o
 
 ### Desktop Autostart
 
-Desktop autostart is suitable for GUI applications that should start after the desktop user logs in. Check the current desktop environment first:
-
-```bash
-echo $XDG_CURRENT_DESKTOP
-```
-
-Common desktop environment examples:
-
-<Tabs items={['LXQt', 'Xfce', 'GNOME']} groupId="ubuntu-desktop-autostart" persist>
-<Tab value="LXQt">
-
-For LXQt, open `Preferences > LXQt Settings > Session Settings > Autostart` to add an autostart application, or create a user-level `.desktop` file:
+Place the `.desktop` file in the user autostart directory. The system starts the program after that user logs in to the desktop:
 
 ```bash
 mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
+vim ~/.config/autostart/myapp.desktop
 ```
 
 Write the following content and change `Exec` to the actual application path:
 
-```ini
+```
 [Desktop Entry]
 Type=Application
 Name=My App
 Exec=/home/firefly/myapp/myapp
 Terminal=false
-OnlyShowIn=LXQt;
 ```
-
-</Tab>
-<Tab value="Xfce">
-
-For Xfce, open `Settings > Session and Startup > Application Autostart` to add an autostart application, or create a user-level `.desktop` file:
-
-```bash
-mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
-```
-
-Write the following content and change `Exec` to the actual application path:
-
-```ini
-[Desktop Entry]
-Type=Application
-Name=My App
-Exec=/home/firefly/myapp/myapp
-Terminal=false
-OnlyShowIn=XFCE;
-```
-
-</Tab>
-<Tab value="GNOME">
-
-For GNOME, place a `.desktop` file in the user autostart directory. The system starts the program after that user logs in to the GNOME desktop:
-
-```bash
-mkdir -p ~/.config/autostart
-nano ~/.config/autostart/myapp.desktop
-```
-
-Write the following content and change `Exec` to the actual application path:
-
-```ini
-[Desktop Entry]
-Type=Application
-Name=My App
-Exec=/home/firefly/myapp/myapp
-Terminal=false
-OnlyShowIn=GNOME;
-X-GNOME-Autostart-enabled=true
-```
-
-</Tab>
-</Tabs>
 
 To start the same program for all desktop users, place the `.desktop` file in the system directory:
 
 ```bash
 sudo cp ~/.config/autostart/myapp.desktop /etc/xdg/autostart/
-```
-
-For a simple command, you can also add the command directly in the graphical autostart tool provided by the desktop environment, for example:
-
-```text
-/home/firefly/myapp/myapp
 ```
 
 ### systemd Service Autostart
@@ -323,8 +259,3 @@ Restore factory settings:
 ```bash
 sudo recovery reset
 ```
-
-## References
-
-- [Firefly Linux Guide - Ubuntu manual](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/manual_ubuntu.html)
-- [Firefly Linux Guide - First use](https://wiki.t-firefly.com/zh_CN/Firefly-Linux-Guide/first_use.html)
