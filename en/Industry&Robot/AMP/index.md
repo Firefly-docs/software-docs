@@ -1,0 +1,3 @@
+# AMP
+
+- [start](start.md)
