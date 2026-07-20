@@ -54,6 +54,22 @@ echo performance | tee $(find /sys/ -name '*governor')
 
 性能模式会让支持的 CPU、devfreq 等模块切换到 `performance` governor，但如果系统温度过高，thermal 机制仍然会强制降频，以保护硬件。
 
+## 关闭图形界面
+
+部分使用场景不需要桌面环境，可将系统默认启动目标切换为 `multi-user.target`，下次启动后系统将进入命令行模式，不再自动启动图形界面：
+
+```bash
+sudo systemctl set-default multi-user.target
+sudo reboot
+```
+
+如需恢复图形界面默认启动，执行：
+
+```bash
+sudo systemctl set-default graphical.target
+sudo reboot
+```
+
 ## 网络配置
 
 配置网络前先确认实际网口名称：

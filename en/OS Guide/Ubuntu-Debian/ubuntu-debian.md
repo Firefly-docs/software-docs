@@ -54,6 +54,22 @@ Some nodes may report errors such as `Permission denied` or `Invalid argument`. 
 
 Performance mode switches supported CPU, devfreq, and similar modules to the `performance` governor, but if the system temperature becomes too high, the thermal mechanism will still force frequency throttling to protect the hardware.
 
+## Disable the Graphical Interface
+
+Some use cases do not require a desktop environment. You can change the default boot target to `multi-user.target`. After the next reboot, the system will boot to command-line mode and will not start the graphical interface automatically:
+
+```bash
+sudo systemctl set-default multi-user.target
+sudo reboot
+```
+
+To restore graphical startup by default, run:
+
+```bash
+sudo systemctl set-default graphical.target
+sudo reboot
+```
+
 ## Network Configuration
 
 Confirm the actual interface name before editing network settings:
