@@ -64,7 +64,7 @@ Common enhancements include:
 
 Example configuration:
 
-```conf
+```
 Section "OutputClass"
     Identifier  "RockchipDRM"
     MatchDriver "rockchip"
@@ -305,7 +305,7 @@ require-input=false
 
 In multi-display scenarios, bind a touchscreen to a specific output through udev rules:
 
-```udev
+```
 ATTRS{name}=="goodix-ts", ENV{WL_OUTPUT}="HDMI-A-1"
 ```
 
