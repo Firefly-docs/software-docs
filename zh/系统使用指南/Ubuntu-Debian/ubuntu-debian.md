@@ -54,6 +54,46 @@ echo performance | tee $(find /sys/ -name '*governor')
 
 性能模式会让支持的 CPU、devfreq 等模块切换到 `performance` governor，但如果系统温度过高，thermal 机制仍然会强制降频，以保护硬件。
 
+## 查看 SoC 各模块温度
+
+SoC 各模块温度可通过 thermal 节点查看。先查看各 thermal zone 的类型：
+
+```bash
+cat /sys/class/thermal/thermal_zone*/type
+```
+
+示例输出：
+
+```text
+soc-thermal
+bigcore0-thermal
+bigcore1-thermal
+littlecore-thermal
+center-thermal
+gpu-thermal
+npu-thermal
+```
+
+再查看对应 thermal zone 的温度：
+
+```bash
+cat /sys/class/thermal/thermal_zone*/temp
+```
+
+示例输出：
+
+```text
+38846
+38846
+38846
+38846
+38846
+38846
+38846
+```
+
+温度单位为毫摄氏度，数值除以 1000 即为摄氏度，例如 `38846` 表示约 `38.846°C`。不同 SoC 和固件版本的 thermal zone 数量、名称可能不同，请以实际节点输出为准。
+
 ## 关闭图形界面
 
 部分使用场景不需要桌面环境，可将系统默认启动目标切换为 `multi-user.target`，下次启动后系统将进入命令行模式，不再自动启动图形界面：
