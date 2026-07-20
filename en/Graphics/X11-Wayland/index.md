@@ -1,3 +1,3 @@
 # X11-Wayland
 
-- [start](start.md)
+- [X11/Wayland Introduction](start.md)
