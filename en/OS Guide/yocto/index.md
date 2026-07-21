@@ -1,3 +1,1 @@
-# yocto
-
-- [start](start.md)
+- [Yocto Usage and Development Guide](yocto.md)
