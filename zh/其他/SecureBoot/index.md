@@ -1,3 +1,3 @@
 # SecureBoot
 
-- [start](start.md)
+- [Rockchip](rockchip.md)
