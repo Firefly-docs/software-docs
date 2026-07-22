@@ -1,3 +1,3 @@
 # EtherCAT
 
-- [start](start.md)
+- [EtherCAT](ethercat_igh.md)
