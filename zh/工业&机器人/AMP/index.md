@@ -1,3 +1,3 @@
 # AMP
 
-- [start](start.md)
+- [AMP 使用指南](start.md)
