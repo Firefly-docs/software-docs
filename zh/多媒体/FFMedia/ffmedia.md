@@ -1,15 +1,14 @@
 # FFMedia
 
-[FFMedia](https://github.com/Firefly-rk-linux-utils/ffmedia_release) 是一套基于 Rockchip MPP/RGA 开发的音视频编解码与处理框架，面向摄像头采集、网络拉流、硬件编解码、图像处理、多路视频拼接、实时显示、转码推流、文件录制和 AI 推理等场景。
+[FFMedia](https://github.com/Firefly-rk-linux-utils/ffmedia_release) 是面向 Linux 多媒体应用的模块化音视频处理框架，重点适配 Rockchip 平台的 V4L2、MPP、RGA、DRM/KMS、EGL/GLES 等能力。
 
-框架将复杂的音视频链路拆分为输入、处理、输出三类模块。开发者可以像搭积木一样组合模块，快速完成从采集、解码、缩放、编码到显示或推流的完整流程。FFMedia 充分利用 Rockchip 平台硬件能力，在降低 CPU 负载的同时，保持较高的实时性和较低的端到端延迟。
-
+框架将摄像头、文件、网络流和应用内存的采集、解复用、编解码、图像处理、推理、显示、录制和推流抽象为可组合模块，适用于实时媒体管线和嵌入式多媒体应用。
 
 ## 核心特点
 
-### 简单易用
+### 模块化管线
 
-FFMedia 将摄像头、文件、RTSP/RTMP、编解码器、RGA 图像处理、DRM 显示、推流和录制等能力封装为统一模块。模块之间通过生产者/消费者模型连接，使用者只需要关注数据流向和少量参数配置。
+FFMedia 将摄像头、文件、RTSP/RTMP、编解码器、RGA 图像处理、 GPU图像处理、DRM 显示、推流和录制等能力封装为统一模块。模块之间通过生产者/消费者模型连接，使用者只需要关注数据流向和少量参数配置。
 
 常见链路可以直接按以下方式理解：
 
@@ -22,15 +21,15 @@ FFMedia 将摄像头、文件、RTSP/RTMP、编解码器、RGA 图像处理、DR
 ```text
 RTSP 拉流 -> MPP 硬件解码 -> DRM 低延迟显示
 Camera 采集 -> MPP 硬件编码 -> RTSP/RTMP 推流
-文件读取 -> 解封装/解码 -> RGA 缩放旋转 -> 显示或重新编码保存
+文件读取 -> 解封装/解码 -> RGA/GPU 缩放旋转 -> 显示或重新编码保存
 多路视频 -> Video Stack 拼接 -> 显示或编码推流
 ```
 
 项目同时提供 C++ 示例和 Python 绑定，便于快速验证功能、接入业务或进行二次开发。
 
-### 低负载
+### 硬件加速
 
-FFMedia 面向 Rockchip 平台硬件能力设计，视频编解码使用 MPP，图像缩放、裁剪、格式转换和合成使用 RGA。相比纯 CPU 处理，硬件加速链路可以显著降低 CPU 占用，更适合多路视频、长时间运行和边缘设备部署。
+FFMedia 重点适配 了Rockchip 平台硬件，视频编解码使用 MPP，图像缩放、裁剪、格式转换和合成使用 RGA或GPU。相比纯 CPU 处理，硬件加速链路可以显著降低 CPU 占用，更适合多路视频、长时间运行和边缘设备部署。
 
 在典型业务中，FFMedia 可用于：
 
@@ -41,7 +40,12 @@ FFMedia 面向 Rockchip 平台硬件能力设计，视频编解码使用 MPP，�
 - 视频转码、封装转换和本地录制。
 - 解码后接入 RKNN 推理，实现检测、跟踪等 AI 视频分析。
 
-### 高实时性与低延迟
+### 统一参数接口与扩展性
+
+- 模块配置由参数系统描述，可在 C++、Python 和命令行中使用相同的参数名称、类型和层级进行查询与设置。
+- 应用可以直接组合现有模块，也可以继承 ModuleMedia 实现自定义数据源、处理器或输出模块。
+
+### 高实时性
 
 FFMedia 的低延迟能力来自硬件编解码、模块化管线、缓冲队列控制和显示链路优化。根据项目 README 中的低延迟显示测试：
 
@@ -97,27 +101,51 @@ File / RTSP / Camera -> MppDec -> Inference -> OSD / Display / Encode
 
 ## 接入方式
 
-FFMedia 的接入重点不是记忆大量命令，而是按业务目标选择模块并连接管线。开发者通常只需要完成三步：
+当前 SDK 提供预编译动态库、公共头文件、CMake 配置、`ffmedia` 命令行工具、C++ 示例和 Python wheel。
 
-1. 选择输入或聚合模块：摄像头、文件、内存数据、RTSP/RTMP 网络流、FFmpeg Demux 或 Video Stack 多路拼接模块。
-2. 选择处理能力：硬件解码、硬件编码、RGA 图像处理、AAC 音频编解码或 RKNN 推理。
-3. 选择输出目标：DRM/X11 显示、文件保存、RTSP/RTMP 推流、音频播放或 FFmpeg Mux。
+### 命令行工具
+
+`ffmedia` 可通过模块、参数和连接关系组合媒体管线：
+
+```bash
+export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
+./bin/ffmedia modules
+./bin/ffmedia params mpp-dec
+./bin/ffmedia run --help
+```
 
 ### C++ 接入
 
-C++ 接口适合对性能、稳定性和生命周期控制要求较高的业务。模块统一继承自 `ModuleMedia`，典型流程为创建模块、设置参数、初始化、建立上下游关系、启动运行、停止释放。
+推荐通过 CMake imported target 接入：
 
-这种模式适合嵌入式产品、边缘网关、多路视频处理服务和长期运行的音视频后台进程。
+```cmake
+find_package(FFMedia REQUIRED CONFIG COMPONENTS core)
+target_link_libraries(my_app PRIVATE FFMedia::FFMedia)
+```
+
+代码中可统一包含：
+
+```cpp
+#include <ffmedia/ffmedia.hpp>
+```
+
+典型流程为创建模块、设置参数、初始化、调用 `connectProducer()` 连接上下游，然后启动和停止源模块。
 
 ### Python 接入
 
-Python 绑定基于 pybind11，接口与 C++ 模块基本对应。它适合快速验证链路、调试算法、接入 AI 推理流程，或在已有 Python 业务中复用 FFMedia 的采集、编解码和显示能力。
+发布包提供适用于 AArch64 的 Python 3.10 和 Python 3.11 wheel：
 
-### 部署环境
+```bash
+python3 -m pip install python/ff_pymedia-2.6.0-cp310-cp310-linux_aarch64.whl
+# Python 3.11 使用 cp311 wheel
+```
 
-FFMedia 主要面向 Rockchip 平台，常用依赖包括编译工具链、CMake、libdrm、alsa、GLES、X11 和 JPEG 相关库。涉及 AI 推理时，需要对应 RKNN 运行库。
+### 示例编译
 
-在实际产品中，建议将依赖库路径、芯片平台、显示设备、音频设备和网络协议参数固化到部署配置中，减少运行时环境差异带来的调试成本。
+```bash
+cmake -S . -B build
+cmake --build build -j$(nproc)
+```
 
 ## 适合 FFMedia 的业务
 

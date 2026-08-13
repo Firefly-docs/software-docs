@@ -1,14 +1,14 @@
 # FFMedia
 
-[FFMedia](https://github.com/Firefly-rk-linux-utils/ffmedia_release) is an audio and video codec and processing framework developed based on Rockchip MPP/RGA. It is designed for scenarios such as camera capture, network stream pulling, hardware codec processing, image processing, multi-channel video stitching, real-time display, transcoding and streaming, file recording, and AI inference.
+[FFMedia](https://github.com/Firefly-rk-linux-utils/ffmedia_release) is a modular audio and video processing framework for Linux multimedia applications, with a focus on support for Rockchip platform capabilities such as V4L2, MPP, RGA, DRM/KMS, and EGL/GLES.
 
-The framework divides complex audio and video pipelines into three types of modules: input, processing, and output. Developers can combine modules like building blocks to quickly complete a full workflow from capture, decoding, scaling, and encoding to display or streaming. FFMedia makes full use of the hardware capabilities of Rockchip platforms to reduce CPU load while maintaining high real-time performance and low end-to-end latency.
+The framework abstracts capture, demultiplexing, encoding and decoding, image processing, inference, display, recording, and streaming from cameras, files, network streams, and application memory into composable modules. It is suitable for real-time media pipelines and embedded multimedia applications.
 
 ## Core Features
 
-### Easy to Use
+### Modular Pipelines
 
-FFMedia encapsulates capabilities such as cameras, files, RTSP/RTMP, codecs, RGA image processing, DRM display, streaming, and recording into unified modules. Modules are connected through a producer/consumer model, so users only need to focus on the data flow and a small number of parameter settings.
+FFMedia encapsulates capabilities such as cameras, files, RTSP/RTMP, codecs, RGA image processing, GPU image processing, DRM display, streaming, and recording into unified modules. Modules are connected through a producer/consumer model, so users only need to focus on the data flow and a small number of parameter settings.
 
 Common pipelines can be understood as follows:
 
@@ -21,15 +21,15 @@ For example:
 ```text
 RTSP stream pulling -> MPP hardware decoding -> DRM low-latency display
 Camera capture -> MPP hardware encoding -> RTSP/RTMP streaming
-File reading -> Demuxing/decoding -> RGA scaling and rotation -> Display or re-encoding and saving
+File reading -> Demuxing/decoding -> RGA/GPU scaling and rotation -> Display or re-encoding and saving
 Multi-channel video -> Video Stack stitching -> Display or encoding and streaming
 ```
 
 The project also provides C++ examples and Python bindings, making it convenient to quickly verify functions, integrate services, or perform secondary development.
 
-### Low Load
+### Hardware Acceleration
 
-FFMedia is designed for the hardware capabilities of Rockchip platforms. Video encoding and decoding use MPP, while image scaling, cropping, format conversion, and composition use RGA. Compared with pure CPU processing, a hardware-accelerated pipeline can significantly reduce CPU usage, making it more suitable for multi-channel video, long-term operation, and edge device deployment.
+FFMedia is optimized for Rockchip platform hardware. Video encoding and decoding use MPP, while image scaling, cropping, format conversion, and composition use RGA or the GPU. Compared with pure CPU processing, a hardware-accelerated pipeline can significantly reduce CPU usage, making it more suitable for multi-channel video, long-term operation, and edge device deployment.
 
 In typical applications, FFMedia can be used for:
 
@@ -40,7 +40,12 @@ In typical applications, FFMedia can be used for:
 - Video transcoding, container format conversion, and local recording.
 - Connecting decoded video to RKNN inference for AI video analysis such as detection and tracking.
 
-### High Real-Time Performance and Low Latency
+### Unified Parameter Interface and Extensibility
+
+- Module configurations are described by the parameter system. The same parameter names, types, and hierarchy can be queried and configured from C++, Python, and the command line.
+- Applications can directly compose existing modules or inherit from `ModuleMedia` to implement custom data sources, processors, or output modules.
+
+### High Real-Time Performance
 
 FFMedia's low-latency capability comes from hardware codecs, modular pipelines, buffer queue control, and display path optimization. According to the low-latency display tests in the project README:
 
@@ -94,27 +99,51 @@ File / RTSP / Camera -> MppDec -> Inference -> OSD / Display / Encode
 
 ## Integration Method
 
-The key to integrating FFMedia is not memorizing many commands, but selecting modules according to service goals and connecting them into a pipeline. Developers usually only need to complete three steps:
+The current SDK provides precompiled shared libraries, public header files, CMake configuration, the `ffmedia` command-line tool, C++ examples, and Python wheels.
 
-1. Select an input or aggregation module: camera, file, memory data, RTSP/RTMP network stream, FFmpeg Demux, or Video Stack multi-channel stitching module.
-2. Select processing capabilities: hardware decoding, hardware encoding, RGA image processing, AAC audio codec processing, or RKNN inference.
-3. Select an output target: DRM/X11 display, file saving, RTSP/RTMP streaming, audio playback, or FFmpeg Mux.
+### Command-Line Tool
+
+The `ffmedia` tool composes media pipelines using modules, parameters, and connections:
+
+```bash
+export LD_LIBRARY_PATH="$PWD/lib:$LD_LIBRARY_PATH"
+./bin/ffmedia modules
+./bin/ffmedia params mpp-dec
+./bin/ffmedia run --help
+```
 
 ### C++ Integration
 
-The C++ interface is suitable for services with high requirements for performance, stability, and lifecycle control. Modules uniformly inherit from `ModuleMedia`. A typical workflow is to create modules, set parameters, initialize them, establish upstream and downstream relationships, start running, and then stop and release resources.
+The recommended integration method is to use the imported CMake target:
 
-This mode is suitable for embedded products, edge gateways, multi-channel video processing services, and long-running audio/video background processes.
+```cmake
+find_package(FFMedia REQUIRED CONFIG COMPONENTS core)
+target_link_libraries(my_app PRIVATE FFMedia::FFMedia)
+```
+
+Use the unified include file in your source code:
+
+```cpp
+#include <ffmedia/ffmedia.hpp>
+```
+
+The typical workflow is to create modules, set parameters, initialize them, call `connectProducer()` to connect upstream and downstream modules, and then start and stop the source modules.
 
 ### Python Integration
 
-The Python bindings are based on pybind11, and the interfaces basically correspond to the C++ modules. They are suitable for quickly verifying pipelines, debugging algorithms, integrating AI inference workflows, or reusing FFMedia capture, codec, and display capabilities in existing Python services.
+The release package provides Python 3.10 and Python 3.11 wheels for AArch64:
 
-### Deployment Environment
+```bash
+python3 -m pip install python/ff_pymedia-2.6.0-cp310-cp310-linux_aarch64.whl
+# Use the cp311 wheel with Python 3.11
+```
 
-FFMedia is mainly designed for Rockchip platforms. Common dependencies include the compilation toolchain, CMake, libdrm, ALSA, GLES, X11, and JPEG-related libraries. When AI inference is involved, the corresponding RKNN runtime library is required.
+### Build the Examples
 
-In actual products, it is recommended to solidify dependency library paths, chip platform settings, display devices, audio devices, and network protocol parameters into the deployment configuration to reduce debugging costs caused by runtime environment differences.
+```bash
+cmake -S . -B build
+cmake --build build -j$(nproc)
+```
 
 ## Services Suitable for FFMedia
 
