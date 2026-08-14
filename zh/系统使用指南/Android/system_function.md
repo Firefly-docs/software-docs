@@ -174,7 +174,7 @@ cat /sys/class/rtc/rtc0/wakealarm
 #关机
 reboot -p
 ```
-
+<!--
 # NPU 的使用
 
 NPU使用详细参考对应机型
@@ -186,7 +186,7 @@ NPU使用详细参考对应机型
 | RK3566 | [ROC-RK3566-PC](https://wiki.t-firefly.com/zh_CN/ROC-RK3566-PC/usage_npu.html) |
 | RK3568 | [AIO-3568J](https://wiki.t-firefly.com/Core-3568J/usage_npu.html), [ROC-RK3568-PC](https://wiki.t-firefly.com/zh_CN/ROC-RK3568-PC/usage_npu.html) |
 | RK3588 | [ITX-3588J](https://wiki.t-firefly.com/zh_CN/Core-3588J/usage_npu.html), [ROC-RK3588S-PC](https://wiki.t-firefly.com/zh_CN/ROC-RK3588S-PC/usage_npu.html) |
-
+-->
 
 # 触摸效果的打开
 * [打开“开发者选项”](system_function.md#kai-fa-zhe-xuan-xiang-de-da-kai)
