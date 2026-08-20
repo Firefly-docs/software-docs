@@ -11,7 +11,7 @@ FireflyApi2 提供了部分系统接口以及封装了部分用户需要的功�
 
 ## 2.资源下载和使用
 
-<font color="red">使用 FireflyApi2 时先检查一下机器的固件是否是最新版本，最新版本的固件内置了基于 FireflyApi2 实现的 FireflyApi2Demo 应用，可以在[[资源下载]](https://www.t-firefly.com/doc/download/104.html)
+<font color="red">使用 FireflyApi2 时先检查一下机器的固件是否是最新版本，最新版本的固件内置了基于 FireflyApi2 实现的 FireflyApi2Demo 应用，可以在[[资源下载]](https://community.t-firefly.com/doc/download)
 页面找到对应的机型查看并下载最新固件，同时也可以同步SDK到最新提交，具体先选择对应机型的[[wiki]](http://wiki.t-firefly.com/)，然后在`Android开发`->`编译Android固件`里面找到同步的方式。</font>
 
 FireflyApi2Demo 源码下载：
@@ -40,11 +40,11 @@ FireflyApi2Demo 是基于 FireflyApi2 的接口实现的 Demo 程序，用户可
 当使用最新版本的固件时，里面会内置 FireflyApi2Demo 的应用。
 * 应用如图
 
-![](../../../img/Android-FireflyApi2/fireflyapi2demo.png)
+![](../../../img/Android-FireflyApi/fireflyapi2demo.png)
 
 * 点击进入应用后会有相应的接口实现列表如图
 
-![](../../../img/Android-FireflyApi2/fireflyapi2demo_ui.png)
+![](../../../img/Android-FireflyApi/fireflyapi2demo_ui.png)
 
 
 ### 2.2 FireflyApi2的使用

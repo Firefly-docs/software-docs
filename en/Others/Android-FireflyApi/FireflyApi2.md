@@ -10,7 +10,7 @@ FireflyApi2 provides some system interfaces and encapsulates the functional inte
 
 ## 2.Resources download and usage
 
-<font color="red">When using FireflyApi2, first check whether the firmware of the machine is the latest version. The latest version of the firmware has built-in FireflyApi2Demo application based on FireflyApi2. You can find the corresponding model on the [Resource Download](https://en.t-firefly.com/doc/download/140.html) page to view and download the latest firmware. At the same time, you can also synchronize the SDK to the latest submission. The specific steps are as follows: first, select the corresponding [wiki](https://en.t-firefly.com/wiki), then find the synchronized method in the Android `Development`-> `Build the Android Firmware`.</font>
+<font color="red">When using FireflyApi2, first check whether the firmware of the machine is the latest version. The latest version of the firmware has built-in FireflyApi2Demo application based on FireflyApi2. You can find the corresponding model on the [Resource Download](https://community.t-firefly.com/en/doc/download) page to view and download the latest firmware. At the same time, you can also synchronize the SDK to the latest submission. The specific steps are as follows: first, select the corresponding [wiki](https://en.t-firefly.com/wiki), then find the synchronized method in the Android `Development`-> `Build the Android Firmware`.</font>
 
 FireflyApi2Demo source code download:
 * [FireflyApi2Demo](https://drive.google.com/drive/folders/1qlPqRdS-lPrYwqaHnh5ofBe7q_Ic27Rt?usp=sharing)
@@ -39,11 +39,11 @@ FireflyApi2Demo is a demo program based on the interface of FireflyApi2. Users c
 
 * The application is as shown in the figure:
 
-![](../../../img/Android-FireflyApi2/fireflyapi2demo_en.png)
+![](../../../img/Android-FireflyApi/fireflyapi2demo_en.png)
 
 * After clicking to enter the application, there will be a corresponding interface implementation list, as shown in the figure:
 
-![](../../../img/Android-FireflyApi2/fireflyapi2demo_ui_en.png)
+![](../../../img/Android-FireflyApi/fireflyapi2demo_ui_en.png)
 
 ### 2.2 FireflyApi2 Usage
 #### 2.2.1 Android Studio
