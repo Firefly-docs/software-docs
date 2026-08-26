@@ -6,14 +6,16 @@
 	Description：Get external storage path for USB-flash
     Parameters：index of num u disk
     Return：Returns null if failed
-	Example：  
+    Example：
+	```
 
 2. Get the external SD card path
 	```
 	Function：public String getSDcardPath()
 	Description：Get the external SD card path
     Return：Returns null if failed 
-	Example：  
+    Example：
+	```
 
 3. Uninstall external storage
 	```
@@ -25,3 +27,4 @@
 
     Remark：When calling this interface to uninstall external storage, use StorageList.getVolumeState to detect the mount state of path, and then uninstall it when it is Environment.MEDIA_MOUNTED
 	Example：
+	```

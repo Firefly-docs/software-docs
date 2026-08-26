@@ -9,18 +9,21 @@ The network feature needs to add the following permissions:
 	Description：Get the MAC address of the device's Ethernet
     Return：Returns null if failed 
 	Example：  
+	```
 
 2. Get the IP address of the device's Ethernet
 	```
 	Function：public String getEthIpAddress() 
 	Description：Get the IP address of the device's Ethernet
 	Example：  
+	```
 
 3. Get device's Ethernet information
 	```
 	Function：public EthernetInfo getEthInfo()
 	Description：Get device's Ethernet information (including: ip, netmask, gateway, dns1, dns2)
 	Example：  
+	```
 
 4. Set the IP address of the device's Ethernet
 	```
@@ -28,13 +31,15 @@ The network feature needs to add the following permissions:
 	Description：Set the IP address of the device's Ethernet
     Parameters：use_static_ip. When true is set to static ip, other parameters are valid, otherwise, when false is set to dynamic ip, it will automatically obtain ip address
     Return：Returns false if failed
-	Example：  
+    Example：
+	```
 
 5. Whether Ethernet is currently connected
 	```
 	Function：public boolean isEthConnect()
 	Description：Whether Ethernet is currently connected
 	Example：  
+	```
 
 6. Set Ethernet on/off
 	```
@@ -42,6 +47,7 @@ The network feature needs to add the following permissions:
 	Description：Set Ethernet on/off
     Parameters：enabled true(open)/false(close) 
 	Example：  
+	```
 
 7. Get the type of current network connection
 	```
@@ -51,3 +57,4 @@ The network feature needs to add the following permissions:
     Remark：Use BroadcatReceiver to monitor the Ethernet ConnectState changes through the monitoring of ETHERNET_STATE_CHANGED_ACTION = "android.net.ethernet.ETHERNET_STATE_CHANGED".
     　　　int connectState=intent.getIntExtra("ethernet_state", -1)
 	Example：  
+	```

@@ -8,6 +8,7 @@
 	Return：true on success, false on failure  
 	Remark：After opening the watchdog, you need to take care of feeding the watchdog once every 30s, otherwise, the watchdog will be closed.  
 	Example：  
+	```
 
 2. Feeding the dog
 	```
@@ -15,6 +16,7 @@
 	Description：Feeding the dog once 
 	Return：Returns true if it feeds the dog successfully  
 	Example：  
+	```
 
 3. Microphone switch（3128 board type is not supported）
 	```
@@ -24,6 +26,7 @@
                     TYPE_HEADSET_MIC headphone mic
 	Return：Returns true if the switch is successful  
 	Example：  
+	```
 
 4. gpio control
 	```
