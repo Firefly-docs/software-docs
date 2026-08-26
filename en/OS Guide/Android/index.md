@@ -1,19 +1,13 @@
-# Getting Started
+# Android Development
+- [Customization overview](customization_overview.md)
 - [Firefly version](firefly_version.md)
 - [Open developer options](developer_options.md)
 - [Use of ADB](adb.md)
 - [Log](log.md)
-
-# Firmware Upgrade
-- [Sn or Mac burning](burning_tool.md)
-- [Sdcard firmware upgrade](sdcard_upgrade.md)
-
-# Android Development
 - [Android system signature file](system_signature.md)
 - [Timer switch](timer_switch.md)
 - [Turn on the touch effect](touch_effect.md)
 - [Rockchip Encoder/Decoder](codec.md)
-- [Customization overview](customization_overview.md)
 - [Boot logo animation modification](boot_logo.md)
 - [Default screen orientation modification](screen_orientation.md)
 - [Hide the status bar by default](hide_statusbar.md)
@@ -33,6 +27,7 @@
 - [Configure USB camera front or rear](uvc_camera.md)
 - [Configure 4K UI](ui_4k.md)
 
+<!--
 # Interface Usage
 - [App Demo overview](app_demo_overview.md)
 - [FireflyDemo](firefly_demo.md)
@@ -42,6 +37,11 @@
 - [CAEDemo](cae_demo.md)
 - [HDMI IN](hdmi_in.md)
 - [ScheduleOnOff](schedule_on_off.md)
+-->
+
+# Firmware Upgrade
+- [Sn or Mac burning](burning_tool.md)
+- [Sdcard firmware upgrade](sdcard_upgrade.md)
 
 # Others
 - [Question feedback](others.md)
