@@ -11,7 +11,7 @@
 -->
 ## Cloud storage 
 
-* [download](https://www.t-firefly.com/share/index/index/id/8b207377a05553a51cb8e523b7b98632.html)
+* [download](https://drive.google.com/drive/folders/12HHdCYan6cug6J-eOk440n4b5wRU7Njq?usp=sharing)
 <!--
 * Android7.1 and above 
 	* [Download here](http://www.t-firefly.com/share/index/index/id/cd2b5b6c71349b8dceddf5d251562de2.html)
