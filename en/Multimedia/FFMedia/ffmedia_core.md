@@ -4,6 +4,11 @@
 
 The framework abstracts capture, demultiplexing, encoding and decoding, image processing, inference, display, recording, and streaming from cameras, files, network streams, and application memory into composable modules. It is suitable for real-time media pipelines and embedded multimedia applications.
 
+The FFMedia SDK is released under the package name `ffmedia_release`, with its source code and prebuilt artifacts hosted on GitHub. There are two ways to obtain the SDK.
+
+- Method 1: Get the latest version (source repository): `git clone --depth=1 https://github.com/Firefly-rk-linux-utils/ffmedia_release.git`
+- Method 2: Download a release package for a specific version: `https://github.com/Firefly-rk-linux-utils/ffmedia_release/releases`
+
 ## Core Features
 
 ### Modular Pipelines

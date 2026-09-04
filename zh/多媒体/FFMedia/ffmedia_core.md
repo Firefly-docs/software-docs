@@ -4,6 +4,11 @@
 
 框架将摄像头、文件、网络流和应用内存的采集、解复用、编解码、图像处理、推理、显示、录制和推流抽象为可组合模块，适用于实时媒体管线和嵌入式多媒体应用。
 
+FFMedia SDK 以 `ffmedia_release` 为发布包名,源码与预编译产物托管于 GitHub。获取 SDK 有两种方式。
+
+- 方式一:获取最新版本(源码仓库) :` git clone --depth=1 https://github.com/Firefly-rk-linux-utils/ffmedia_release.git`
+- 方式二:下载指定版本的 Release 包: ` https://github.com/Firefly-rk-linux-utils/ffmedia_release/releases`
+
 ## 核心特点
 
 ### 模块化管线
