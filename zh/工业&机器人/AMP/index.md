@@ -1,7 +1,6 @@
 # AMP 概述
 
 - [概述](amp_overview.md)
-- [平台支持](amp_platform_support.md)
 - [SDK 结构](amp_sdk_structure.md)
 
 # 准备与快速上手

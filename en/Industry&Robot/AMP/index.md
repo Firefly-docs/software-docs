@@ -1,7 +1,6 @@
 # AMP
 
 - [Overview](amp_overview.md)
-- [Platform support](amp_platform_support.md)
 - [SDK structure](amp_sdk_structure.md)
 
 # Preparation and Quick Start
