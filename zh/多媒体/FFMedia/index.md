@@ -1,18 +1,8 @@
 # FFMedia
 
-# 概览
+本 Wiki 介绍 FFMedia 的定位、架构、SDK 获取方式和常用管线。
 
-- [核心特点](ffmedia_core.md)
-- [架构概览](ffmedia_architecture.md)
-
-# 应用场景
-
-- [典型应用场景](ffmedia_scenarios.md)
-
-# 接入
-
-- [接入方式](ffmedia_integration.md)
-
-# 适合的业务
-
-- [适合 FFMedia 的业务](ffmedia_business.md)
+- [简介](ffmedia_core.md)：了解 FFMedia 的定位和核心特点。
+- [概念与架构](ffmedia_architecture.md)：理解模块如何连接，以及媒体数据如何流动。
+- [下载及编译](ffmedia_integration.md)：获取最新发布包、运行 SDK 和编译示例。
+- [通用使用方法](ffmedia_scenarios.md)：使用 C++、Python 和 CLI 搭建与验证管线。
