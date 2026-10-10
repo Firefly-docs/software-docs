@@ -4,7 +4,7 @@ FFMedia 提供 C++ API、Python 绑定和 `ffmedia` 命令行三种使用方式�
 
 1. C++：用于正式应用和需要完整控制的媒体业务。
 2. Python：用于快速开发、业务验证和脚本集成。
-3. CLI：用于前期确认模块、参数和连接关系，验证通过后再迁移到 C++ 或 Python。
+3. CLI：用于快速验证、调试，通用功能使用及脚本自动化等。
 
 无论使用哪种方式，管线的基本流程都是：
 
@@ -91,7 +91,7 @@ ModuleFileReader -> ModuleMppDec -> ModuleFileWriter
 
 ### 设置参数
 
-模块参数统一由 `MediaParameter` 管理。建议使用参数路径设置配置，并在运行前检查返回值：
+参数设置可直接通过模块接口直接设置，也可以通过模块参数统一由 `MediaParameter` 管理的参数路径设置配置，并在运行前检查返回值：
 
 ~~~cpp
 auto encoder = std::make_shared<ModuleMppEnc>(MEDIA_CODEC_VIDEO_H264);
@@ -104,17 +104,6 @@ if (encoder->setParameter("encode/bitrate", 4096) < 0)
 ~~~
 
 参数名称、类型、默认值、取值范围和可写状态应以当前模块的 `queryParameter()` 或 `params` 查询结果为准。完整规则请参考[模块参数系统](https://github.com/Firefly-rk-linux-utils/ffmedia_release/blob/master/docs/ffmedia_parameters.md)。
-
-### 应用内存输入
-
-应用需要逐帧提交数据时，可以使用 `ModuleMemReader`：
-
-1. 创建并初始化 `ModuleMemReader`。
-2. 将它连接到解码或图像处理模块。
-3. 启动管线后，应用循环调用 `setInputBuffer()` 提交数据。
-4. 根据业务需要调用 `waitProcess()` 等待处理结果，结束时设置退出状态并停止管线。
-
-`ModuleMemReader` 需要应用主动提供 Buffer，不能直接交给通用 `ffmedia run` 驱动。需要接入自定义数据源或处理回调时，C++ 应用还可以使用 `ModuleAppSource`、`ModuleAppProcessor` 或继承 `ModuleMedia`。
 
 ## Python 接入
 
@@ -179,8 +168,6 @@ Python 模块的构造函数、参数路径和回调签名以当前绑定导出�
 - 两个模块的输出和输入通道是否能够匹配。
 - 一条管线的连接关系是否符合预期。
 
-CLI 不负责替代正式应用中的业务循环、设备管理、错误恢复或自定义处理逻辑。验证成功后，应将管线迁移到 C++ 或 Python。
-
 ### 查询模块和参数
 
 ~~~bash
@@ -200,27 +187,50 @@ CLI 使用三类参数：
 | `-p ID:参数` | 设置模块参数 | `-p 'decoder:output{format=NV12}'` |
 | `-c PRODUCER[@CHANNELS]=CONSUMER` | 连接模块 | `-c source@0=decoder` |
 
-下面的命令用于验证“文件输入 -> MPP 解码 -> 文件输出”这条管线：
+示例1：读取媒体文件，解码并显示到系统窗口上。
 
 ~~~bash
 ./bin/ffmedia run \
     -m source=ffmpeg-demux \
     -m decoder=mpp-dec \
-    -m output=file-writer \
-    -p 'source:source{uri=/data/input.mp4;loop=0}' \
-    -p 'decoder:output{format=NV12}' \
-    -p 'output:path=/data/output.nv12' \
-    -c source@0=decoder \
-    -c decoder=output
+    -m dis=renderer-video \
+    -p 'source:source{uri=input.mp4;loop=0}' \
+    -c source=decoder \
+    -c decoder=dis \
+    --sync dis=video
 ~~~
 
-不启动管线也可以检查配置结果：
+示例2：4路读取媒体文件、解码、2x2拼接到 1080p 画布上，并显示到系统的 720p 窗口上。
 
-~~~bash
+```bash
 ./bin/ffmedia run \
-    -m decoder=mpp-dec \
-    --show-params decoder
-~~~
+  -m src1=file-reader -m src2=file-reader -m src3=file-reader -m src4=file-reader \
+  -m dec1=mpp-dec -m dec2=mpp-dec -m dec3=mpp-dec -m dec4=mpp-dec \
+  -m stack=video-stack \
+  -m vo=renderer-video \
+  -p 'src1:source{path=/path/to/input1.mp4;loop=true}' \
+  -p 'src2:source{path=/path/to/input2.mp4;loop=true}' \
+  -p 'src3:source{path=/path/to/input3.mp4;loop=true}' \
+  -p 'src4:source{path=/path/to/input4.mp4;loop=true}' \
+  -p 'stack:output{width=1920;height=1080;format=NV12};frame-rate=30' \
+  -p 'stack:input-layout{input-id=0;crop{x=0;y=0;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=1;crop{x=964;y=0;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=2;crop{x=0;y=544;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=3;crop{x=964;y=544;width=956;height=536}}' \
+  -p 'vo:window{x=100;y=100;width=1280;height=720}' \
+  -c src1=dec1 \
+  -c src2=dec2 \
+  -c src3=dec3 \
+  -c src4=dec4 \
+  -c dec1=stack \
+  -c dec2=stack \
+  -c dec3=stack \
+  -c dec4=stack \
+  -c stack=vo
+
+```
+
+![](../../../img/FFMedia/multi_stack_display.png)
 
 CLI 的完整语法和选项请参考上游仓库的 [`ffmedia` 命令行使用介绍](https://github.com/Firefly-rk-linux-utils/ffmedia_release/blob/master/examples/demo/ffmedia.md)。
 

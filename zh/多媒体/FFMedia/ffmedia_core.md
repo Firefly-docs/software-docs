@@ -121,10 +121,24 @@ Options:
 
 ~~~
 
-示范：输入是分辨率为 1080p 的 rtsp 摄像头，把解码图像缩放为 720p 并且旋转 90 度，输出到显示器上。
+示例1：输入是分辨率为 1080p 的 rtsp 摄像头，把解码图像缩放为 720p 并且旋转 90 度，输出到显示器上。
 
 ```
 ./demo rtsp://admin:firefly123@172.16.2.96 -o 1280x720 -r 90 -d 0 -s
 ```
+
+示例2：输入是分辨率为 1080p 的 mipi 摄像头，将摄像头画面编码成 h265 格式，本地建立 rtsp 服务器供客户端拉流。
+
+```
+./demo /dev/video11 -i 1920x1080 -a NV12 -e h265 --port 8554 --push_path /live/test
+```
+
+示例3：输入是 1080p 的媒体文件，同时进行16路读取、解码、缩放及输出到显示器上。
+
+```
+./demo input.mp4 -d 0 -s -c 16
+```
+
+![](../../../img/FFMedia/multi_display.png)
 
 更多使用可阅读sdk下的examples/demo/Readme.md文档。

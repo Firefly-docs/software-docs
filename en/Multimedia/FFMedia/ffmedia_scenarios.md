@@ -4,7 +4,7 @@ FFMedia provides a C++ API, Python bindings, and the `ffmedia` command-line tool
 
 1. C++: for production applications and media workflows that require full control.
 2. Python: for rapid development, functional validation, and script integration.
-3. CLI: for checking modules, parameters, and connections before moving the pipeline into C++ or Python.
+3. CLI: for rapid validation, debugging, general-purpose tasks, and script automation.
 
 Regardless of the interface, the basic pipeline lifecycle is:
 
@@ -91,7 +91,7 @@ Calling `start()` on the source module starts its connected downstream modules. 
 
 ### Set Parameters
 
-Module parameters are managed by `MediaParameter`. Set parameters by path and check the return value:
+Parameters can be set directly through module interfaces or through parameter paths managed uniformly by `MediaParameter`. Check the return values before running the pipeline:
 
 ~~~cpp
 auto encoder = std::make_shared<ModuleMppEnc>(MEDIA_CODEC_VIDEO_H264);
@@ -104,17 +104,6 @@ if (encoder->setParameter("encode/bitrate", 4096) < 0)
 ~~~
 
 Use the current module's `queryParameter()` or `params` output as the source of truth for parameter names, types, defaults, ranges, and writable states. See the [FFMedia parameter system](https://github.com/Firefly-rk-linux-utils/ffmedia_release/blob/master/docs/ffmedia_parameters.md) for complete rules.
-
-### Application-Memory Input
-
-Use `ModuleMemReader` when the application must submit data frame by frame:
-
-1. Create and initialize `ModuleMemReader`.
-2. Connect it to a decoder or image-processing module.
-3. Start the pipeline and submit data in a loop with `setInputBuffer()`.
-4. Use `waitProcess()` when the application needs to wait for processing, then set the exit status and stop the pipeline.
-
-`ModuleMemReader` requires the application to provide the buffers and cannot be driven directly by the generic `ffmedia run` command. For custom data sources or processing callbacks, a C++ application can also use `ModuleAppSource`, `ModuleAppProcessor`, or inherit from `ModuleMedia`.
 
 ## Python Integration
 
@@ -179,8 +168,6 @@ The `ffmedia` CLI is a generic pipeline validation tool. Use it before writing a
 - Whether producer output channels match consumer input channels.
 - Whether the pipeline connection graph is correct.
 
-The CLI does not replace the business loop, device management, error recovery, or custom processing in a production application. After validation, move the pipeline into C++ or Python.
-
 ### Query Modules and Parameters
 
 ~~~bash
@@ -200,27 +187,50 @@ The CLI uses three kinds of arguments:
 | `-p ID:PARAMETERS` | Set module parameters | `-p 'decoder:output{format=NV12}'` |
 | `-c PRODUCER[@CHANNELS]=CONSUMER` | Connect modules | `-c source@0=decoder` |
 
-The following command validates a file input -> MPP decoder -> file output pipeline:
+Example 1: Read a media file, decode it, and display it in a system window.
 
 ~~~bash
 ./bin/ffmedia run \
     -m source=ffmpeg-demux \
     -m decoder=mpp-dec \
-    -m output=file-writer \
-    -p 'source:source{uri=/data/input.mp4;loop=0}' \
-    -p 'decoder:output{format=NV12}' \
-    -p 'output:path=/data/output.nv12' \
-    -c source@0=decoder \
-    -c decoder=output
+    -m dis=renderer-video \
+    -p 'source:source{uri=input.mp4;loop=0}' \
+    -c source=decoder \
+    -c decoder=dis \
+    --sync dis=video
 ~~~
 
-You can inspect the resulting configuration without starting the pipeline:
+Example 2: Read four media files, decode them, compose them into a 2x2 layout on a 1080p canvas, and display the result in a 720p system window.
 
-~~~bash
+```bash
 ./bin/ffmedia run \
-    -m decoder=mpp-dec \
-    --show-params decoder
-~~~
+  -m src1=file-reader -m src2=file-reader -m src3=file-reader -m src4=file-reader \
+  -m dec1=mpp-dec -m dec2=mpp-dec -m dec3=mpp-dec -m dec4=mpp-dec \
+  -m stack=video-stack \
+  -m vo=renderer-video \
+  -p 'src1:source{path=/path/to/input1.mp4;loop=true}' \
+  -p 'src2:source{path=/path/to/input2.mp4;loop=true}' \
+  -p 'src3:source{path=/path/to/input3.mp4;loop=true}' \
+  -p 'src4:source{path=/path/to/input4.mp4;loop=true}' \
+  -p 'stack:output{width=1920;height=1080;format=NV12};frame-rate=30' \
+  -p 'stack:input-layout{input-id=0;crop{x=0;y=0;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=1;crop{x=964;y=0;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=2;crop{x=0;y=544;width=956;height=536}}' \
+  -p 'stack:input-layout{input-id=3;crop{x=964;y=544;width=956;height=536}}' \
+  -p 'vo:window{x=100;y=100;width=1280;height=720}' \
+  -c src1=dec1 \
+  -c src2=dec2 \
+  -c src3=dec3 \
+  -c src4=dec4 \
+  -c dec1=stack \
+  -c dec2=stack \
+  -c dec3=stack \
+  -c dec4=stack \
+  -c stack=vo
+
+```
+
+![](../../../img/FFMedia/multi_stack_display.png)
 
 For the complete CLI syntax and options, see the upstream [`ffmedia` command-line guide](https://github.com/Firefly-rk-linux-utils/ffmedia_release/blob/master/examples/demo/ffmedia.md).
 

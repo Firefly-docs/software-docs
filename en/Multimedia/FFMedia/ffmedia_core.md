@@ -120,12 +120,24 @@ Options:
 
 ~~~
 
-Example: The input is an RTSP camera with a resolution of 1080p. The decoded image is scaled to 720p, rotated by 90 degrees, and displayed on the screen.
+Example 1: The input is an RTSP camera with a resolution of 1080p. The decoded image is scaled to 720p, rotated by 90 degrees, and displayed on the screen.
 
 ```
 ./demo rtsp://admin:firefly123@172.16.2.96 -o 1280x720 -r 90 -d 0 -s
 ```
 
-For more usage details, read the `examples/demo/Readme.md` documentation in the SDK.
+Example 2: The input is a MIPI camera with a resolution of 1080p. The camera stream is encoded in H.265 format, and a local RTSP server is created for clients to pull the stream.
 
-~~~
+```
+./demo /dev/video11 -i 1920x1080 -a NV12 -e h265 --port 8554 --push_path /live/test
+```
+
+Example 3: The input is a 1080p media file. Sixteen streams are read, decoded, scaled, and displayed on the screen simultaneously.
+
+```
+./demo input.mp4 -d 0 -s -c 16
+```
+
+![](../../../img/FFMedia/multi_display.png)
+
+For more usage details, read the `examples/demo/Readme.md` documentation in the SDK.
