@@ -27,24 +27,6 @@ The main directories are as follows:
 
 The CMake project at the root of the release package is primarily used to build examples, tests, and extensions. The FFMedia core shared library is provided directly by the release package.
 
-## Run the Prebuilt Tool
-
-From the root of the release package, set the shared library path:
-
-~~~bash
-./bin/ffmedia --help
-~~~
-
-Check the supported modules and parameters:
-
-~~~bash
-./bin/ffmedia modules
-./bin/ffmedia params mpp-dec
-./bin/ffmedia params image-processor output
-~~~
-
-For more detailed usage, read the `examples/demo/ffmedia.md` documentation and the `examples/demo/ffmedia.cpp` source code in the SDK.
-
 ## Build Demos and Tests
 
 Basic build:

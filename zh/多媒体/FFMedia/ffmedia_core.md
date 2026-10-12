@@ -28,24 +28,6 @@ cd ffmedia_release
 发布包根目录的 CMake 工程主要用于编译示例、测试和扩展；FFMedia 核心动态库由发布包
 直接提供。
 
-## 运行预编译工具
-
-在发布包根目录设置动态库路径：
-
-~~~bash
-./bin/ffmedia --help
-~~~
-
-参考支持模块和参数：
-
-~~~bash
-./bin/ffmedia modules
-./bin/ffmedia params mpp-dec
-./bin/ffmedia params image-processor output
-~~~
-
-更多详细使用可阅读sdk下的examples/demo/ffmedia.md文档和examples/demo/ffmedia.cpp源码。
-
 ## 编译 Demo 和测试
 
 基础构建：

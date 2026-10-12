@@ -232,6 +232,42 @@ Example 2: Read four media files, decode them, compose them into a 2x2 layout on
 
 ![](../../../img/FFMedia/multi_stack_display.png)
 
+Example 3: Decode a 1080P RTSP video stream and convert it to an RGB24 canvas. Blend three locally decoded video frames onto this canvas with transparency levels of 0.3, 0.6, and 1.0 respectively, then render the canvas to the system window for display.
+
+```bash
+./ffmedia run \
+  -m rtsp=rtsp-client \
+  -m file1=file-reader \
+  -m file2=file-reader \
+  -m file3=file-reader \
+  -m netdec=mpp-dec \
+  -m dec1=mpp-dec \
+  -m dec2=mpp-dec \
+  -m dec3=mpp-dec \
+  -m mix=image-processor \
+  -m dis=renderer-video \
+  -p 'rtsp:source{url=rtsp://admin:firefly123@172.16.2.100:554/av_stream}' \
+  -p 'file1:source{path=input.mp4;loop=true}' \
+  -p 'file2:source{path=input.mp4;loop=true}' \
+  -p 'file3:source{path=input.mp4;loop=true}' \
+  -p 'mix:output{width=1920;height=1080;format=RGB24}' \
+  -p 'mix:blend{input-id=1;destination-rect{x=40;y=40;width=640;height=360};opacity=0.3}' \
+  -p 'mix:blend{input-id=2;destination-rect{x=1200;y=40;width=640;height=360};opacity=0.6}' \
+  -p 'mix:blend{input-id=3;destination-rect{x=40;y=670;width=640;height=360};opacity=1.0}' \
+  -p 'dis:title="RTSP + 3 local videos"' \
+  -c rtsp=netdec \
+  -c file1=dec1 \
+  -c file2=dec2 \
+  -c file3=dec3 \
+  -c netdec=mix \
+  -c dec1=mix \
+  -c dec2=mix \
+  -c dec3=mix \
+  -c mix=dis
+```
+
+![](../../../img/FFMedia/multi_blend.png)
+
 For the complete CLI syntax and options, see the upstream [`ffmedia` command-line guide](https://github.com/Firefly-rk-linux-utils/ffmedia_release/blob/master/examples/demo/ffmedia.md).
 
 ## Common Problems
