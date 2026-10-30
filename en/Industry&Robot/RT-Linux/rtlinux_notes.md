@@ -1,45 +1,22 @@
-# RTLinux Notes
+# More Real-Time Optimization Options
 
-## Notes
+## Cache Partitioning
 
-### RK3568 Requires the RT Version of BL31
+Cache partitioning divides the last-level cache (LLC) into non-overlapping regions and limits different tasks or task groups to their own cache regions. This reduces cache contention and memory access latency jitter. On multicore platforms, when real-time tasks share the LLC with memory-intensive general-purpose tasks, the latter can continuously evict the working set of the former, causing unpredictable cache misses. Cache partitioning cuts off this interference through spatial isolation.
 
-Using the RT version of BL31 on RK3568 provides better real-time performance.
+### Example
 
-Build command:
-
-```shell
-$ cd $sdk/uboot
-$ ./make.sh rk3568-rt
-```
-
-Flash `miniloader.bin` and `uboot.img`.
-
-If `cache_write_streaming_cfg` related messages appear during boot, the RT version of BL31 is being used.
-
-### Methods to Improve Real-Time Performance on RK3568
-
-#### Cache Partitioning
-
-The ARM Cortex-A55 architecture supports L3 space partitioning. Cortex-A55 L3 memory can be divided into 4 parts, and each CPU can be configured to use specific parts. Configure this in `rkbin/RKBOOT/RK3568MINIALL.ini`:
+The RK3568 uses the ARM Cortex-A55 architecture, which supports L3 space partitioning. Cortex-A55 L3 memory can be divided into four parts, and each CPU can be configured to use selected parts. Configure this in `rkbin/RKBOOT/RK3568MINIALL.ini`:
 
 ```c
 [BOOT1_PARAM]
-
 WORD_3=0xcc33
 ```
 
-`WORD_3=0xcc33` means the 4 L3 parts are labeled P0, P1, P2, and P3 as follows:
+`WORD_3=0xcc33` means that the four L3 regions are labeled P0, P1, P2, and P3 as follows:
 
 - CPU0 and CPU1 share L3 P0 and P1.
 - CPU2 and CPU3 share L3 P2 and P3.
-
-The `WORD_3` configuration value is described below:
-
-- bit0~bit3: the mask bits of the 4 L3 parts allocated to CPU0. bit0 set to 1 means the first L3 part is allocated to CPU0; bit1 set to 1 means the second L3 part is allocated to CPU0, and so on.
-- bit4~bit7: the mask bits of the 4 L3 parts allocated to CPU1.
-- bit8~bit11: the mask bits of the 4 L3 parts allocated to CPU2.
-- bit12~bit15: the mask bits of the 4 L3 parts allocated to CPU3.
 
 After configuration, confirm it through the following boot log:
 
@@ -47,7 +24,11 @@ After configuration, confirm it through the following boot log:
 INFO: L3 cache partition cfg-cc33
 ```
 
-#### Isolate a Core
+## CPU Isolation
+
+CPU isolation removes designated CPUs from the general scheduler and housekeeping subsystem through kernel boot parameters. Isolated CPUs do not participate in load balancing or run routine kernel background work. They are usually dedicated to real-time tasks to reduce interference from scheduler migrations, kernel worker threads, and periodic ticks.
+
+### Example
 
 Add `isolcpus=3 nohz_full=3` to `bootargs` to isolate CPU3 so that it does not participate in system task scheduling and can be used as the real-time core.
 
@@ -65,12 +46,14 @@ index c7e309645099b..28fac4880744d 100644
         fiq-debugger {
 ```
 
-#### Bind Real-Time Tasks to the Real-Time Core
+## Run Real-Time Tasks on the Real-Time Core
+
+Task-to-core affinity uses CPU affinity to pin a specific task or thread to one or more designated CPUs. It is a basic mechanism for CPU partitioning. It is commonly combined with a real-time scheduling policy such as `SCHED_FIFO`, allowing real-time tasks to run at high priority on a dedicated core while reducing migration overhead and loss of cache locality.
+
+### Example
 
 Bind `cyclictest` to CPU3 to test real-time performance:
 
 ```shell
 $ taskset -c 3 cyclictest -c0 -m -t -p99 -D 12h
 ```
-
-> Note: Use `ps -eo pid,psr,comm | grep cyclictest` to check whether `cyclictest` is bound to CPU3.

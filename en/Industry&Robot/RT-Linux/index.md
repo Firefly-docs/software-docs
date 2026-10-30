@@ -1,14 +1,15 @@
-# Fundamentals and PREEMPT_RT
+# RTLINUX
 
-- [Preface and overview](rtlinux_preface_overview.md)
+- [Preface and Introduction](rtlinux_preface_overview.md)
+
+# PREEMPT_RT
+
 - [PREEMPT_RT](rtlinux_preempt_rt.md)
 
 # Xenomai
 
-- [Kernel patch](rtlinux_xenomai.md)
-- [Buildroot](rtlinux_xenomai_buildroot.md)
-- [Debian or Ubuntu](rtlinux_xenomai_debian.md)
+- [Xenomai](rtlinux_xenomai.md)
 
-# Notes
+# More Real-Time Optimization Options
 
-- [RK3568 and real-time performance notes](rtlinux_notes.md)
+- [More Real-Time Optimization Options](rtlinux_notes.md)

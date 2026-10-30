@@ -1,19 +1,11 @@
-# RTLinux Preface and Overview
+# RTLinux
 
 ## Preface
 
-This document describes the basic usage of Linux kernel real-time patches and helps developers quickly understand and use a real-time system.
+This document describes the basic usage of Linux kernel real-time patches and helps developers quickly understand and use real-time systems.
 
 ---
 
-## Overview
+## Introduction
 
-Select the corresponding real-time system kernel patch based on the current kernel version. You can check the kernel version in `kernel/Makefile`:
-
-```shell
-# SPDX-License-Identifier: GPL-2.0
-VERSION = 6
-PATCHLEVEL = 1
-SUBLEVEL = 118
-...
-```
+**RT-Linux** does not refer to a single operating system. It is **a collection of solutions that give the Linux kernel real-time capabilities**. These solutions share the goal of preserving the general Linux ecosystem, including drivers, libraries, and development tools, while adding timing determinism to task execution so that high-priority tasks respond within defined time limits. The main approaches are **PREEMPT_RT**, which modifies the Linux kernel itself to make it preemptible, and **Xenomai**, which adds a higher-priority real-time core outside Linux. They make different trade-offs in real-time performance, ecosystem compatibility, and development complexity.

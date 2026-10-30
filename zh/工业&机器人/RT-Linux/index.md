@@ -1,14 +1,15 @@
-# 基础与 PREEMPT_RT
+# RTLINUX
 
-- [前言与概要](rtlinux_preface_overview.md)
+- [前言与简介](rtlinux_preface_overview.md)
+
+# PREEMPT_RT
+
 - [PREEMPT_RT](rtlinux_preempt_rt.md)
 
 # Xenomai
 
-- [内核补丁](rtlinux_xenomai.md)
-- [Buildroot](rtlinux_xenomai_buildroot.md)
-- [Debian 或 Ubuntu](rtlinux_xenomai_debian.md)
+- [Xenomai](rtlinux_xenomai.md)
 
-# 注意事项
+# 更多实时优化方案
 
-- [RK3568 与实时性说明](rtlinux_notes.md)
+- [更多实时优化方案](rtlinux_notes.md)
