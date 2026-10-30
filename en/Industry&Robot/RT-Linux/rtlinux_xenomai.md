@@ -11,8 +11,6 @@ Select the Dovetail kernel patch that matches the current kernel version.
 1. Rockchip SDK: the patches are located in `$sdk/docs/Patches/Real-Time-Performance/XENOMAI/`.
 2. Xenomai project: download a version matching your kernel from https://source.denx.de/Xenomai/linux-dovetail.
 
-We recommend first looking in the SDK for a patch matching your kernel.
-
 ### Apply the Patch
 
 Using RK3588 as an example, apply the Dovetail kernel patch corresponding to the kernel version:

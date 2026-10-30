@@ -11,8 +11,6 @@ Xenomai 是面向 Linux 的实时扩展框架，传统上采用双内核架构�
 1. Rockchip SDK：相关补丁位于 `$sdk/docs/Patches/Real-Time-Performance/XENOMAI/` 目录下。
 2. xenomai 官方：可前往 https://source.denx.de/Xenomai/linux-dovetail 下载与自己内核对应版本来使用。
 
-建议优先从sdk寻找与自己内核匹配的
-
 ### 应用补丁
 
 以RK3588为例，打入与内核对应版本的Dovetail 内核补丁：
